@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.yumei.settlecore.common.dal.dataobject">
+
+	<resultMap id="bankBranchResultMap" type="com.yumei.settlecore.common.dal.dataobject.BankBranchDO">
+		<result property="id" column="ID" />
+		<result property="bankCode" column="BANK_CODE" />
+		<result property="provinceCode" column="PROVINCE_CODE" />
+		<result property="cityCode" column="CITY_CODE" />
+		<result property="code" column="CODE" />
+		<result property="name" column="NAME" />
+		<result property="tel" column="TEL" />
+		<result property="addr" column="ADDR" />
+	</resultMap>
+	
+	<!-- 根据银行编号，省份编号，市区编号获取所有分行信息 -->
+	<select id="QUERY_BANK_BRANCH_BY_BANK_CODE_SUM" parameterType="java.util.Map" resultType="int">
+		SELECT COUNT(ID)
+		FROM bank_branch
+		<where>
+		     1=1
+		    <if test="bankBranch != null and bankBranch != ''">
+				AND NAME LIKE CONCAT('%', #{bankBranch}, '%')
+			</if>
+			<if test="bankCode != null and bankCode != ''">
+				AND BANK_CODE = #{bankCode}
+			</if>
+			<if test="provinceCode != null and provinceCode != ''">
+				AND PROVINCE_CODE = #{provinceCode}
+			</if>
+			<if test="cityCode != null and cityCode != ''">
+				AND CITY_CODE = #{cityCode}
+			</if>
+		</where>
+	</select>
+	
+	<!-- 根据银行编号，省份编号，市区编号获取所有分行信息 -->
+	<select id="QUERY_BANK_BRANCH_BY_BANK_CODE" parameterType="java.util.Map" resultMap="bankBranchResultMap" resultType="list">
+		SELECT ID,BANK_CODE,PROVINCE_CODE,CITY_CODE,CODE,NAME,TEL,ADDR
+		FROM bank_branch
+		<where>
+		     1=1
+		    <if test="bankBranch != null and bankBranch != ''">
+				AND NAME LIKE CONCAT('%', #{bankBranch}, '%')
+			</if>
+			<if test="bankCode != null and bankCode != ''">
+				AND BANK_CODE = #{bankCode}
+			</if>
+			<if test="provinceCode != null and provinceCode != ''">
+				AND PROVINCE_CODE = #{provinceCode}
+			</if>
+			<if test="cityCode != null and cityCode != ''">
+				AND CITY_CODE = #{cityCode}
+			</if>
+		</where>
+		ORDER BY CODE DESC
+		LIMIT #{currentPage}, #{size}
+	</select>
+	
+</mapper>
